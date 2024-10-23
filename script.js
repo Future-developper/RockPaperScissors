@@ -51,7 +51,28 @@ function playGame() {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
+    
+    const body = document.querySelector('body');
+    const rock = document.createElement("button");
+    rock.textContent = 'rock';
+    
+    const paper = document.createElement("button");
+    paper.textContent = 'paper';
+    const scissors = document.createElement("button");
+    scissors.textContent = 'scissors';
+    body.appendChild(rock);
+    body.appendChild(paper);
+    body.appendChild(scissors);
+    const buttons = document.querySelectorAll("button");
+    buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const humanSelection = button.textContent;
+            const computerSelection = getComputerChoice();
+            playRound(humanSelection, computerSelection);
+        });
+    });
     function playRound(humanChoice, computerChoice) {
+        
         loses_to = {
             "rock": "scissors",
             "paper": "rock",
@@ -59,39 +80,55 @@ function playGame() {
         };
         if (humanChoice == loses_to[computerChoice]) {
             computerScore += 1;
-            console.log(`You lose! ${capitalizeFirstLetter(computerChoice)} beats ${capitalizeFirstLetter(humanChoice)}`);
+            followParagraph.textContent = `You lose! ${capitalizeFirstLetter(computerChoice)} beats ${capitalizeFirstLetter(humanChoice)}`;
         }
         else if (computerChoice == loses_to[humanChoice]) {
             humanScore += 1;
-            console.log(`Computer lose! ${capitalizeFirstLetter(humanChoice)} beats ${capitalizeFirstLetter(computerChoice)}`);
+            followParagraph.textContent = `Computer loses! ${capitalizeFirstLetter(humanChoice)} beats ${capitalizeFirstLetter(computerChoice)}`;
             
         }
         else {
-            console.log("draw");
+            followParagraph.textContent = `${humanChoice} - ${computerChoice} => draw`;
 
         }
+        refreshTableau();
 
+        if (humanScore == 5 || computerScore == 5) {
+            if (humanScore > computerScore) {
+                followParagraph.textContent = "";
+                score.textContent = `Human wins! Score: ${humanScore}:${computerScore}`;
+                getScoresToZero();
+            }
+            else {
+                followParagraph.textContent = "";
+                score.textContent = `Computer wins! Score: ${humanScore}:${computerScore} `;
+                getScoresToZero();
+            }
+           
+        }
         
         
     }
+    function getScoresToZero() {
+        humanScore = 0;
+        computerScore = 0;
+    }
+    const tableau = document.createElement('div');
+    const score = document.createElement('h1');
+    function refreshTableau() {
+        score.textContent = `Score - Player: ${humanScore}; Computer: ${computerScore}`;
+    }
+    refreshTableau();
+    score.style.color = 'red';
+    const followParagraph = document.createElement("p");
+    followParagraph.style.color = "blue";
+    tableau.appendChild(followParagraph);
+    tableau.appendChild(score);
+    body.appendChild(tableau);
+
     
+   
     
-    for (let i=0;i<5;i++) {
-        const humanSelection = getHumanChoice();
-        const computerSelection = getComputerChoice();
-        playRound(humanSelection,computerSelection);
-        
-    }
-    
-    if (humanScore > computerScore) {
-        console.log(`Human wins! Score: ${humanScore}:${computerScore}`);
-    }
-    else if (computerScore > humanScore) {
-        console.log(`Computer wins! Score: ${humanScore}:${computerScore} `);
-    }
-    else {
-        console.log(`Draw! Score: ${humanScore}:${computerScore}`)
-    }
 }
 
 
